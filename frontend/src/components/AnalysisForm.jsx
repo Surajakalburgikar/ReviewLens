@@ -102,7 +102,7 @@ export default function AnalysisForm({ onSubmit, isLoading }) {
       <div style={{
         display: 'flex',
         gap: '0.5rem',
-        borderBottom: '1px solid var(--border)',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.15)',
         paddingBottom: '0',
       }}>
         <button
@@ -113,8 +113,8 @@ export default function AnalysisForm({ onSubmit, isLoading }) {
             padding: '0.6rem 1rem',
             background: 'none',
             border: 'none',
-            borderBottom: activeTab === 'text' ? '2px solid var(--accent)' : '2px solid transparent',
-            color: activeTab === 'text' ? 'var(--accent)' : 'var(--text-secondary)',
+            borderBottom: activeTab === 'text' ? '2px solid var(--accent-brand)' : '2px solid transparent',
+            color: activeTab === 'text' ? 'var(--accent-brand)' : 'var(--text-secondary)',
             cursor: 'pointer',
             fontWeight: activeTab === 'text' ? '600' : '400',
             fontSize: '0.9rem',
@@ -133,8 +133,8 @@ export default function AnalysisForm({ onSubmit, isLoading }) {
             padding: '0.6rem 1rem',
             background: 'none',
             border: 'none',
-            borderBottom: activeTab === 'url' ? '2px solid var(--accent)' : '2px solid transparent',
-            color: activeTab === 'url' ? 'var(--accent)' : 'var(--text-secondary)',
+            borderBottom: activeTab === 'url' ? '2px solid var(--accent-brand)' : '2px solid transparent',
+            color: activeTab === 'url' ? 'var(--accent-brand)' : 'var(--text-secondary)',
             cursor: 'pointer',
             fontWeight: activeTab === 'url' ? '600' : '400',
             fontSize: '0.9rem',
@@ -165,8 +165,8 @@ export default function AnalysisForm({ onSubmit, isLoading }) {
               style={{
                 flex: 1,
                 padding: '0.75rem 1rem',
-                background: 'var(--surface)',
-                border: '1px solid var(--border)',
+                background: 'var(--bg-secondary)',
+                border: '1px solid rgba(255, 255, 255, 0.15)',
                 borderRadius: '8px',
                 color: 'var(--text-primary)',
                 fontSize: '0.9rem',
@@ -179,7 +179,7 @@ export default function AnalysisForm({ onSubmit, isLoading }) {
               style={{
                 display: 'flex', alignItems: 'center', gap: '0.4rem',
                 padding: '0.75rem 1.25rem',
-                background: 'var(--accent)',
+                background: 'var(--accent-brand)',
                 color: '#fff',
                 border: 'none',
                 borderRadius: '8px',
@@ -193,6 +193,29 @@ export default function AnalysisForm({ onSubmit, isLoading }) {
               {isScraping ? <Loader size={15} className="spin" /> : <Link size={15} />}
               {isScraping ? 'Fetching...' : 'Fetch Reviews'}
             </button>
+            {url && (
+              <button
+                type="button"
+                onClick={() => {
+                  setUrl('');
+                  setScrapeError(null);
+                }}
+                disabled={isScraping}
+                style={{
+                  padding: '0.75rem 1.25rem',
+                  background: 'none',
+                  border: '1px solid rgba(255, 255, 255, 0.15)',
+                  borderRadius: '8px',
+                  color: 'var(--text-secondary)',
+                  cursor: isScraping ? 'not-allowed' : 'pointer',
+                  fontWeight: '600',
+                  fontSize: '0.9rem',
+                  transition: 'all 0.15s ease',
+                }}
+              >
+                Clear
+              </button>
+            )}
           </div>
 
           {/* Supported source hints */}
@@ -249,8 +272,8 @@ export default function AnalysisForm({ onSubmit, isLoading }) {
             disabled={isLoading}
             style={{
               padding: '0.85rem 1rem',
-              background: 'var(--surface)',
-              border: `1px solid ${isTooLong ? 'var(--sentiment-negative)' : isTooShort ? 'var(--sentiment-neutral)' : 'var(--border)'}`,
+              background: 'var(--bg-secondary)',
+              border: `1px solid ${isTooLong ? 'var(--sentiment-negative)' : isTooShort ? 'var(--sentiment-neutral)' : 'rgba(255, 255, 255, 0.15)'}`,
               borderRadius: '8px',
               color: 'var(--text-primary)',
               fontSize: '0.9rem',
@@ -273,27 +296,54 @@ export default function AnalysisForm({ onSubmit, isLoading }) {
             </span>
           </div>
 
-          {/* Submit button */}
-          <button
-            type="submit"
-            disabled={isSubmitDisabled}
-            style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
-              padding: '0.85rem 1.5rem',
-              background: 'var(--accent)',
-              color: '#fff',
-              border: 'none',
-              borderRadius: '8px',
-              cursor: isSubmitDisabled ? 'not-allowed' : 'pointer',
-              opacity: isSubmitDisabled ? 0.55 : 1,
-              fontWeight: '600',
-              fontSize: '0.95rem',
-              transition: 'opacity 0.15s ease',
-            }}
-          >
-            <Send size={16} />
-            {isLoading ? 'Analyzing...' : 'Analyze Review'}
-          </button>
+          {/* Submit and Clear button group */}
+          <div style={{ display: 'flex', gap: '0.75rem' }}>
+            <button
+              type="submit"
+              disabled={isSubmitDisabled}
+              style={{
+                flex: 1,
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
+                padding: '0.85rem 1.5rem',
+                background: 'var(--accent-brand)',
+                color: '#fff',
+                border: 'none',
+                borderRadius: '8px',
+                cursor: isSubmitDisabled ? 'not-allowed' : 'pointer',
+                opacity: isSubmitDisabled ? 0.55 : 1,
+                fontWeight: '600',
+                fontSize: '0.95rem',
+                transition: 'opacity 0.15s ease',
+              }}
+            >
+              <Send size={16} />
+              {isLoading ? 'Analyzing...' : 'Analyze Review'}
+            </button>
+
+            {text && (
+              <button
+                type="button"
+                onClick={() => {
+                  setText('');
+                  setScrapeInfo(null);
+                }}
+                disabled={isLoading}
+                style={{
+                  padding: '0.85rem 1.5rem',
+                  background: 'none',
+                  border: '1px solid rgba(255, 255, 255, 0.15)',
+                  borderRadius: '8px',
+                  color: 'var(--text-secondary)',
+                  cursor: isLoading ? 'not-allowed' : 'pointer',
+                  fontWeight: '600',
+                  fontSize: '0.95rem',
+                  transition: 'all 0.15s ease',
+                }}
+              >
+                Clear
+              </button>
+            )}
+          </div>
         </form>
       )}
     </div>
