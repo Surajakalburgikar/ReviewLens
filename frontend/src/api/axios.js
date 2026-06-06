@@ -13,7 +13,8 @@ const apiClient = axios.create({
     'Content-Type': 'application/json',
     'Accept': 'application/json',
   },
-  timeout: 10000, // 10 second timeout
+  timeout: 60000, // 60 seconds — needed for Render cold starts and Google Play scraping
+  withCredentials: false, // No cookies used — session_id is in request body
 });
 
 export default apiClient;

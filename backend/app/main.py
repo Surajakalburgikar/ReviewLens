@@ -73,13 +73,12 @@ app = FastAPI(
 )
 
 # CORS — explicitly list allowed methods and headers (not wildcard *)
-# allow_credentials=True is required for cookies to work cross-origin
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins,
-    allow_credentials=True,
-    allow_methods=["GET", "POST", "OPTIONS"],   # only what the app actually uses
-    allow_headers=["Content-Type", "X-Session-ID"],
+    allow_credentials=False,   # No cookies/session credentials used
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["Content-Type", "Accept"],
 )
 
 # Assemble versioned API router
