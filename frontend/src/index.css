@@ -1,0 +1,318 @@
+/**
+ * ReviewLens Global CSS Stylesheet.
+ * Custom Premium Dark Theme.
+ * STRICT RULES: Absolutely no blue or purple colors are used.
+ * Uses Emerald Green as primary brand accent, Amber as neutral, and Crimson as negative.
+ */
+
+:root {
+  /* Colors */
+  --bg-primary: #0a0b0d;
+  --bg-secondary: #13151a;
+  --bg-tertiary: #1c1f26;
+  --border-color: rgba(255, 255, 255, 0.06);
+  --border-focus: #10b981; /* Emerald Green */
+  
+  --text-primary: #f3f4f6;
+  --text-secondary: #9ca3af;
+  --text-muted: #4b5563;
+
+  /* Accent Colors (No blue or purple) */
+  --accent-brand: #10b981; /* Emerald */
+  --accent-brand-hover: #059669;
+  --accent-brand-muted: rgba(16, 185, 129, 0.15);
+  
+  --sentiment-positive: #10b981; /* Emerald Green */
+  --sentiment-positive-bg: rgba(16, 185, 129, 0.08);
+  
+  --sentiment-neutral: #f59e0b; /* Amber Gold */
+  --sentiment-neutral-bg: rgba(245, 158, 11, 0.08);
+  
+  --sentiment-negative: #ef4444; /* Crimson Red */
+  --sentiment-negative-bg: rgba(239, 68, 68, 0.08);
+
+  /* Fonts & Radius */
+  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  
+  /* Shadow & Transitions */
+  --shadow-premium: 0 10px 30px -10px rgba(0, 0, 0, 0.7);
+  --shadow-inset: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+  --transition-smooth: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Base resets */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* App container */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-image: 
+    radial-gradient(at 10% 20%, rgba(16, 185, 129, 0.03) 0px, transparent 50%),
+    radial-gradient(at 90% 80%, rgba(245, 158, 11, 0.02) 0px, transparent 50%);
+}
+
+/* Navigation */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 2rem;
+  background-color: rgba(19, 21, 26, 0.8);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-color);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+.logo span {
+  color: var(--accent-brand);
+}
+
+.nav-links {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.nav-link {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: var(--transition-smooth);
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-sm);
+}
+
+.nav-link:hover, .nav-link.active {
+  color: var(--text-primary);
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.nav-link.active {
+  border-bottom: 2px solid var(--accent-brand);
+  border-radius: 0;
+  background-color: transparent;
+}
+
+/* Main Content Layout */
+.main-content {
+  flex: 1;
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem;
+}
+
+/* Premium Card wrapper (Glassmorphism) */
+.glass-card {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-premium);
+  padding: 2rem;
+  margin-bottom: 2rem;
+  transition: var(--transition-smooth);
+}
+
+.glass-card:hover {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Heading styles */
+h1 {
+  font-size: 2.25rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.subtitle {
+  color: var(--text-secondary);
+  text-align: center;
+  margin-bottom: 2.5rem;
+  font-size: 1.1rem;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-sm);
+  border: none;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.btn-primary {
+  background-color: var(--accent-brand);
+  color: var(--bg-primary);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--accent-brand-hover);
+  transform: translateY(-1px);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Forms & Textarea */
+.textarea-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.textarea-input {
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  border-radius: var(--radius-sm);
+  padding: 1rem;
+  font-family: inherit;
+  font-size: 1rem;
+  resize: vertical;
+  min-height: 160px;
+  outline: none;
+  transition: var(--transition-smooth);
+  box-shadow: var(--shadow-inset);
+}
+
+.textarea-input:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.15);
+}
+
+.textarea-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+/* Badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.badge-positive {
+  background-color: var(--sentiment-positive-bg);
+  color: var(--sentiment-positive);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.badge-neutral {
+  background-color: var(--sentiment-neutral-bg);
+  color: var(--sentiment-neutral);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+.badge-negative {
+  background-color: var(--sentiment-negative-bg);
+  color: var(--sentiment-negative);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+/* Spinner Loader */
+.spinner-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 0;
+  gap: 1rem;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(16, 185, 129, 0.1);
+  border-top-color: var(--accent-brand);
+  border-radius: 50%;
+  animation: spin 1s infinite linear;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Error banner */
+.error-banner {
+  background-color: var(--sentiment-negative-bg);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: var(--sentiment-negative);
+  padding: 1rem;
+  border-radius: var(--radius-sm);
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  border-top: 1px solid var(--border-color);
+  margin-top: auto;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .navbar {
+    padding: 1rem 1.5rem;
+  }
+  .main-content {
+    padding: 1.5rem 1rem;
+  }
+  h1 {
+    font-size: 1.75rem;
+  }
+}

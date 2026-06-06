@@ -1,107 +1,183 @@
-# Review Insight - Sentiment Analyzer & Summarizer
+# ReviewLens — Explainable AI Sentiment & Summarizer
 
-Review Insight is a professional Django-based web application that automates the extraction, summarization, and sentiment classification of product reviews. The system takes product reviews (either by scraping Amazon/Flipkart product review pages or via direct copy-pasted text), extracts key summary sentences, and predicts the overall customer sentiment using a pre-trained Random Forest Classifier.
+> **Live Demo:** [https://reviewlens.vercel.app](https://reviewlens.vercel.app) *(Placeholder)*
+> **Backend API:** [https://reviewlens-api.onrender.com](https://reviewlens-api.onrender.com) *(Placeholder)*
+
+ReviewLens is a production-ready Web and API service that extracts, summarizes, and classifies customer reviews. Leveraging a scikit-learn Logistic Regression model trained inline at startup, the system predicts sentiment and uses Explainable AI (XAI) feature importances to highlight the specific terms that drove its predictions.
 
 ---
 
-## 📂 Project Structure
+## 🏗️ System Architecture
 
-The codebase is organized cleanly with professional naming conventions:
+The following diagram shows the request-response lifecycle from review submission to model inference and database saving:
 
-```text
-├── core/                   # Main Django configuration directory (settings, urls, wsgi)
-├── analyzer/               # Django application folder containing core logic
-│   ├── migrations/         # Database migrations
-│   ├── templates/          # HTML templates (index, result, login, register, etc.)
-│   ├── apps.py             # Application configuration
-│   ├── forms.py            # User registration/authentication forms
-│   ├── urls.py             # Routing rules for the analyzer app
-│   └── views.py            # Main logic for text processing, scraping, and prediction
-├── db.sqlite3              # Local SQLite database containing user profiles
-├── manage.py               # Django command-line utility
-├── random_forest_model.sav # Serialized RandomForestClassifier model
-└── reviews_dataset.csv     # Reference dataset used to fit the TF-IDF Vectorizer
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User as User Browser
+    participant FE as React Frontend
+    participant BE as FastAPI Backend
+    participant ML as ML Service
+    participant DB as Supabase PostgreSQL
+    
+    User->>FE: Paste review text & hit "Analyze"
+    Note over FE: Validates length (20-5000 chars)<br/>Retrieves localStorage Session UUID
+    FE->>BE: POST /api/v1/analyze (text, session_id)
+    Note over BE: Cleanse text (whitespace, emojis)
+    BE->>ML: Run Extractive Summarizer
+    ML-->>BE: Returns summary, keywords, stats
+    BE->>ML: Run Predictor (Logistic Regression)
+    ML-->>BE: Returns sentiment & class probability
+    BE->>ML: Calculate XAI Influential Words
+    ML-->>BE: Returns attribution weights for top 5 terms
+    BE->>DB: Save report record asynchronously
+    BE-->>FE: Returns wrapped JSON { data, error: null }
+    FE-->>User: Renders SentimentBar, Summary, Chips, and XAI progress bars
 ```
 
 ---
 
-## 🛠️ Key Features
+## 🛠️ Technology Stack
 
-1. **Dual input processing**:
-   - **Real-Time URL Scraping**: Automatically parses and extracts reviews from Flipkart and Amazon product review URLs.
-   - **Direct Raw Text Analysis**: Allows copy-pasting review text directly to bypass potential automated scraper blocking or captcha walls.
-2. **Extractive Text Summarization**: Custom frequency-based scoring of sentence-tokens using `nltk` to extract the most representative sentences.
-3. **Sentiment Classification**: Vectorizes text using a fitted TF-IDF pipeline and runs predictions through a Random Forest Classifier to label sentiment as **Positive** or **Negative**.
-4. **Graceful Error Handling**: Detects anti-scraping blocks or empty inputs and provides visual Bootstrap feedback to the user on the dashboard rather than raising server-side crashes.
-5. **Secure Authentication**: Built-in Django user registration, login session tracking, and protected endpoints.
+| Component | Technology | Rationale |
+| :--- | :--- | :--- |
+| **Frontend Framework** | React 19 + Vite | High performance single-page application with modern hooks. |
+| **Confidence Charts** | Recharts | Light, responsive SVG charting for displaying probabilities. |
+| **Icons** | Lucide React | Clean, responsive vector icons. |
+| **Backend API** | FastAPI | Modern, asynchronous Python framework with automated OpenAPI validation. |
+| **Machine Learning** | scikit-learn | Fast TF-IDF + Logistic Regression pipeline. Fits in <50ms at startup. |
+| **Text Processing** | NLTK | Tokenization and sentence-based scoring for extractive summarization. |
+| **ORM & Database** | SQLAlchemy + PostgreSQL | Asynchronous database connection pool saving anonymous user session histories. |
+| **Migrations** | Alembic | Standard, tracked SQL schema migrations. |
 
 ---
 
-## ⚙️ Setup and Installation
+## ⚙️ Local Development Setup
 
-### 1. Prerequisites
+### 1. Backend Setup
+
 Ensure you have Python 3.11+ installed.
 
-### 2. Configure Virtual Environment
-Create and activate a virtual environment, then install the required libraries. 
-
-> [!IMPORTANT]
-> The pre-trained model file (`random_forest_model.sav`) was compiled with a specific scikit-learn version. To prevent unpickling errors, make sure you install the exact compatible packages:
-
 ```bash
+# Navigate to backend directory
+cd backend
+
 # Create a virtual environment
 python -m venv venv
 
-# Activate virtual environment
-# On Windows:
+# Activate the virtual environment
+# Windows:
 .\venv\Scripts\activate
-# On macOS/Linux:
+# macOS/Linux:
 source venv/bin/activate
 
 # Install dependencies
-pip install scikit-learn==1.2.2 numpy==1.26.4 django pandas beautifulsoup4 nltk lxml textblob matplotlib seaborn
+pip install -r requirements.txt
+
+# Run migrations (local development will fallback to local SQLite reviewlens.db)
+alembic upgrade head
+
+# Start local server
+uvicorn app.main:app --reload
 ```
 
-### 3. Setup NLTK Resources
-Run Python and download the required NLTK tokenizers and stopwords datasets:
+Open your browser and navigate to `http://127.0.0.1:8000/docs` to see the automated OpenAPI documentation.
 
-```python
-import nltk
-nltk.download('punkt')
-nltk.download('stopwords')
-```
+### 2. Frontend Setup
 
-### 4. Run System Checks & Start Server
-Run Django verification checks and start the development server:
+Ensure you have Node.js 18+ installed.
 
 ```bash
-# Perform system check
-python manage.py check
+# Navigate to frontend directory
+cd ../frontend
 
-# Run the development server
-python manage.py runserver
+# Install node dependencies
+npm install
+
+# Start local development server
+npm run dev
 ```
 
-Open your browser and navigate to `http://127.0.0.1:8000/`.
+Open `http://localhost:5173` to view the web dashboard.
 
 ---
 
-## 💡 Usage Workflow
+## 🚀 Deployment Guide
 
-```mermaid
-graph TD
-    A[User Logins] --> B[Dashboard Page]
-    B -->|Option 1: Paste URL| C[Scrape Flipkart/Amazon Reviews]
-    B -->|Option 2: Paste Review Text| D[Direct Text Processing]
-    C -->|If Blocked/Empty| E[Redirect to Dashboard with Warning Alert]
-    C -->|If Successful| F[Combine Reviews Text]
-    D --> F
-    F --> G[Extractive Summarization Scoring]
-    G --> H[TF-IDF Vectorization]
-    H --> I[RandomForest Model Sentiment Prediction]
-    I --> J[Display Summary & predicted Sentiment]
+### Backend: Render.com
+1. Create a new **Web Service** pointing to your repository.
+2. Configure environment settings:
+   * **Root Directory:** `backend`
+   * **Build Command:** `pip install -r requirements.txt`
+   * **Start Command:** `cd /opt/render/project/src/backend && alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port $PORT --proxy-headers`
+3. Add environment variables under **Environment**:
+   * `DATABASE_URL`: `postgresql+asyncpg://[user]:[password]@[host]:5432/[dbname]?ssl=require` (Supabase Connection string)
+   * `ALLOWED_ORIGINS`: `https://your-frontend.vercel.app`
+   * `APP_ENV`: `production`
+
+### Frontend: Vercel
+1. Import your project in Vercel.
+2. Select **Vite** as the framework template.
+3. Configure the **Root Directory** as `frontend`.
+4. Under **Environment Variables**, add:
+   * `VITE_API_BASE_URL`: `https://your-backend-app.onrender.com`
+5. Click **Deploy**.
+
+---
+
+## 🔌 API Reference
+
+### 1. Analyze Review
+* **Endpoint:** `POST /api/v1/analyze`
+* **Request Body:**
+```json
+{
+  "text": "The build quality is absolutely amazing, exceeded my expectations completely. Highly recommend this product.",
+  "session_id": "8bb3c128-5a76-43d9-a78a-d4e46651e1a1"
+}
+```
+* **Success Response (201 Created):**
+```json
+{
+  "data": {
+    "id": "f661cb51-1db4-4893-8fe0-de149c3048c3",
+    "sentiment": "Positive",
+    "confidence": 0.58,
+    "summary": "The build quality is absolutely amazing, exceeded my expectations completely.",
+    "keywords": ["build", "quality", "amazing", "exceeded", "expectations"],
+    "top_influential_words": [
+      { "word": "exceeded", "score": 1.0 },
+      { "word": "amazing", "score": 0.95 },
+      { "word": "exceeded expectations", "score": 0.9 }
+    ],
+    "word_count": 14,
+    "sentence_count": 2,
+    "reading_time_seconds": 4,
+    "created_at": "2026-06-06T10:00:44Z"
+  },
+  "error": null
+}
 ```
 
-1. **Sign In**: Log in using your registered credentials (e.g., test username: `suraj`, password: `password123`).
-2. **Submit Input**: Paste an Amazon/Flipkart review URL or copy-paste review paragraphs directly.
-3. **Review Results**: The system will redirect to the results page displaying the extracted summary sentences and the predicted sentiment.
+### 2. Get Session History
+* **Endpoint:** `GET /api/v1/history/{session_id}?limit=10`
+* **Success Response (200 OK):**
+```json
+{
+  "data": [
+    {
+      "id": "f661cb51-1db4-4893-8fe0-de149c3048c3",
+      "sentiment": "Positive",
+      "confidence": 0.58,
+      "summary": "The build quality is absolutely amazing...",
+      "keywords": ["build", "quality", "amazing"],
+      "top_influential_words": [{ "word": "exceeded", "score": 1.0 }],
+      "word_count": 14,
+      "sentence_count": 2,
+      "reading_time_seconds": 4,
+      "created_at": "2026-06-06T10:00:44Z"
+    }
+  ],
+  "error": null
+}
+```
