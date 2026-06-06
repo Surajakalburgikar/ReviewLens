@@ -72,11 +72,19 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# CORS — explicitly list allowed methods and headers (not wildcard *)
+# Determine origins — use wildcard in dev, specific origins in production
+import os
+_raw_origins = os.environ.get("ALLOWED_ORIGINS", "")
+_cors_origins = [o.strip() for o in _raw_origins.split(",") if o.strip()]
+
+# Fallback: if env var not set or empty, use settings
+if not _cors_origins:
+    _cors_origins = settings.cors_origins
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_origins,
-    allow_credentials=False,   # No cookies/session credentials used
+    allow_origins=_cors_origins,
+    allow_credentials=False,
     allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["Content-Type", "Accept"],
 )
@@ -97,4 +105,14 @@ async def root_status():
         "service": "ReviewLens API",
         "api_version": settings.API_VERSION,
         "environment": settings.APP_ENV,
+    }
+
+
+@app.get("/debug/cors", include_in_schema=False)
+async def debug_cors():
+    """Temporary debug endpoint — shows what ALLOWED_ORIGINS is loaded as."""
+    import os
+    return {
+        "env_ALLOWED_ORIGINS": os.environ.get("ALLOWED_ORIGINS", "NOT SET"),
+        "settings_cors_origins": settings.cors_origins,
     }
