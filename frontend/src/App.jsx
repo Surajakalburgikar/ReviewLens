@@ -54,12 +54,9 @@ export default function App() {
 
       {/* Footer */}
       <footer className="footer">
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.35rem', marginBottom: '0.5rem' }}>
-          <span>© {new Date().getFullYear()} ReviewLens. Built for Professional Resume Presentation.</span>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.35rem' }}>
+          <span>© {new Date().getFullYear()} ReviewLens. All rights reserved.</span>
         </div>
-        <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>
-          FastAPI Backend (Inline ML Attributions) + React 19 Frontend. No data shared externally.
-        </p>
       </footer>
     </div>
   );
