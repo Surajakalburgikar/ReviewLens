@@ -2,6 +2,9 @@
 
 React 19 + Vite frontend for the ReviewLens sentiment analysis platform.
 
+*   **Live App:** [https://review-lens-mocha.vercel.app/](https://review-lens-mocha.vercel.app/)
+*   **Production API:** [https://reviewlens-n7nt.onrender.com](https://reviewlens-n7nt.onrender.com)
+
 ## Setup
 
 ```bash

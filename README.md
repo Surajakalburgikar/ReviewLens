@@ -1,7 +1,7 @@
 # ReviewLens — Explainable AI Sentiment & Summarizer
 
-> **Live Demo:** [https://reviewlens.vercel.app](https://reviewlens.vercel.app) *(Placeholder)*
-> **Backend API:** [https://reviewlens-api.onrender.com](https://reviewlens-api.onrender.com) *(Placeholder)*
+> **Live Demo:** [https://review-lens-mocha.vercel.app/](https://review-lens-mocha.vercel.app/)
+> **Backend API:** [https://reviewlens-n7nt.onrender.com](https://reviewlens-n7nt.onrender.com)
 
 ReviewLens is a production-ready Web and API service that extracts, summarizes, and classifies customer reviews. Leveraging a scikit-learn Logistic Regression model trained inline at startup, the system predicts sentiment and uses Explainable AI (XAI) feature importances to highlight the specific terms that drove its predictions.
 
