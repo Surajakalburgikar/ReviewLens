@@ -290,6 +290,10 @@ h1 {
   100% { transform: rotate(360deg); }
 }
 
+.spin {
+  animation: spin 1s linear infinite;
+}
+
 /* Error banner */
 .error-banner {
   background-color: var(--sentiment-negative-bg);
