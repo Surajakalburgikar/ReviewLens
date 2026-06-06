@@ -134,7 +134,26 @@ def analyze_and_summarize(text: str) -> Tuple[str, List[str], Dict[str, int]]:
         
     # Sort selected sentences back to their original order in the text (so the summary flows chronologically)
     selected_sentences.sort(key=lambda x: x[2])
-    summary = " ".join([item[0] for item in selected_sentences])
+    
+    # Deduplicate — remove sentences that are >80% similar to already-selected ones
+    seen = []
+    unique_sentences = []
+    for item in selected_sentences:
+        sentence = item[0].strip()
+        # Check if this sentence is too similar to any already selected
+        is_duplicate = False
+        for seen_sentence in seen:
+            # Simple overlap check — if one contains most of the other, it's a duplicate
+            shorter = min(len(sentence), len(seen_sentence))
+            longer = max(len(sentence), len(seen_sentence))
+            if shorter > 0 and shorter / longer > 0.7:
+                is_duplicate = True
+                break
+        if not is_duplicate:
+            seen.append(sentence)
+            unique_sentences.append(item)
+            
+    summary = " ".join([item[0] for item in unique_sentences]) if unique_sentences else " ".join([item[0] for item in selected_sentences[:2]])
     
     # 4. Extract top 5 keywords by raw frequency
     sorted_keywords = sorted(freq_dict.items(), key=lambda x: x[1], reverse=True)
